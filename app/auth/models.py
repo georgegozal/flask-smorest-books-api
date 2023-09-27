@@ -1,5 +1,6 @@
 from app.extensions import db
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 from app.models import BASE
 
 
@@ -11,11 +12,12 @@ class User(db.Model, BASE):
     password_hash = db.Column(db.String(100), nullable=False)
     first_name = db.Column(db.String(100), nullable=False)
     last_name = db.Column(db.String(100), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     # password
     @property
     def password(self):
-        raise AttributeError('password is not a readable attribute')
+        raise AttributeError("password is not a readable attribute")
 
     @password.setter
     def password(self, password):

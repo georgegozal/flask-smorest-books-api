@@ -22,7 +22,6 @@ class Config(object):
         )
     else:
         POSTGRES_HOST = os.environ.get("POSTGRES_HOST")
-        # print(POSTGRES_HOST)
         POSTGRES_PORT = os.environ.get("POSTGRES_PORT", 5432)
         POSTGRES_USER = os.environ.get("POSTGRES_USER", "postgres")
         POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD", "postgres")
