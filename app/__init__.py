@@ -11,6 +11,7 @@ def create_app():
     app.config.from_object(Config)
 
     register_extensions(app)
+    register_api(app)
 
     @app.shell_context_processor
     def make_shell_context():
@@ -33,4 +34,4 @@ def register_extensions(app):
 def register_api(app):
     api = Api(app)
     api.add_resource(UserResource, "/register")
-    api.add_resource(LoginResource, "/login")
+    # api.add_resource(LoginResource, "/login")

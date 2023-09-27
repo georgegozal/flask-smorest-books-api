@@ -9,7 +9,7 @@ class User(db.Model, BASE):
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100), unique=True, index=True, nullable=False)
-    password_hash = db.Column(db.String(100), nullable=False)
+    password_hash = db.Column(db.String(254), nullable=False)
     first_name = db.Column(db.String(100), nullable=False)
     last_name = db.Column(db.String(100), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
