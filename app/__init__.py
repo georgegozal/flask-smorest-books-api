@@ -4,6 +4,7 @@ from app.extensions import db, migrate, jwt
 from app.auth import User
 from app.auth.resource import UserResource, LoginResource
 from app.books import Book, Author, Genre, Condition, BookGenres
+from app.books.resource import AvaliableBooks
 from app.configs import Config
 
 
@@ -39,3 +40,4 @@ def register_api(app):
     api = Api(app)
     api.add_resource(UserResource, "/auth/register")
     api.add_resource(LoginResource, "/auth/login")
+    api.add_resource(AvaliableBooks, "/books")
