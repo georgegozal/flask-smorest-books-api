@@ -1,8 +1,9 @@
 from app.extensions import db
 from werkzeug.security import generate_password_hash, check_password_hash
+from app.models import BASE
 
 
-class User(db.Model, Base):
+class User(db.Model, BASE):
     __tablename__ = "user"
 
     id = db.Column(db.Integer, primary_key=True)
