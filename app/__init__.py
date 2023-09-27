@@ -1,8 +1,9 @@
 from flask import Flask
 from flask_restful import Api
 from app.extensions import db, migrate, jwt
-from app.auth.models import User
+from app.auth import User
 from app.auth.resource import UserResource, LoginResource
+from app.books import Book, Author, Genre, Condition, BookGenres
 from app.configs import Config
 
 
