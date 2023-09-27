@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_restful import Api
-from app.extensions import db, migrate
+from app.extensions import db, migrate, jwt
 from app.auth.models import User
 from app.auth.resource import UserResource, LoginResource
 from app.configs import Config
@@ -27,11 +27,14 @@ def register_extensions(app):
     # Setup Flask-Migrate
     migrate.init_app(app, db)
 
+    # Setup Flask-JWT-Extended
+    jwt.init_app(app)
+
     with app.app_context():
         db.create_all()
 
 
 def register_api(app):
     api = Api(app)
-    api.add_resource(UserResource, "/register")
-    # api.add_resource(LoginResource, "/login")
+    api.add_resource(UserResource, "/auth/register")
+    api.add_resource(LoginResource, "/auth/login")
