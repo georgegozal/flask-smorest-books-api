@@ -4,7 +4,7 @@ from app.extensions import db, migrate, jwt
 from app.auth import User
 from app.auth.resource import UserResource, LoginResource
 from app.books import Book, Author, Genre, Condition, BookGenres
-from app.books.resource import AvaliableBooks
+from app.books.resource import BooksResource
 from app.configs import Config
 
 
@@ -17,7 +17,14 @@ def create_app():
 
     @app.shell_context_processor
     def make_shell_context():
-        return {"db": db, "User": User}
+        return {
+            "db": db,
+            "User": User,
+            "Book": Book,
+            "Author": Author,
+            "Genre": Genre,
+            "Condition": Condition,
+        }
 
     return app
 
@@ -40,4 +47,4 @@ def register_api(app):
     api = Api(app)
     api.add_resource(UserResource, "/auth/register")
     api.add_resource(LoginResource, "/auth/login")
-    api.add_resource(AvaliableBooks, "/books")
+    api.add_resource(BooksResource, "/books", "/books/genre/<genre>")
