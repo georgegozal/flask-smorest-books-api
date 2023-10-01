@@ -10,7 +10,7 @@ class Book(db.Model, BASE):
     # condition_id = db.Column(db.Integer, db.ForeignKey("condition.id"), nullable=False)
     description = db.Column(db.Text)
     # location = db.Column(db.String(255), nullable=False)
-    is_available = db.Column(db.Boolean, default=True)
+    # is_available = db.Column(db.Boolean, default=True)
     owner_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -29,6 +29,12 @@ class Genre(db.Model, BASE):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), unique=True, nullable=False)
     # books = db.relationship("Book", backref="genre", lazy=True)
+
+    def __repr__(self):
+        return self.name
+
+    def __str__(self):
+        return self.name
 
 
 class BookGenres(db.Model):

@@ -15,24 +15,31 @@ class BooksResource(Resource):
     parser.add_argument("description", type=str, required=False)
     # parser.add_argument("location", type=str, required=True)
 
+    @jwt_required(optional=True)
     def get(self, genre=None):
+        authorization_header = request.headers.get("Authorization")
+        if authorization_header:
+            current_user = get_jwt_identity()
+
         if genre:
-            books = Book.query.filter_by(genre=genre, is_available=True).all()
+            books = Book.query.join(Book.genres).filter(Genre.name == genre).all()
         else:
-            books = Book.query.filter_by(is_available=True).all()
+            books = Book.query.all()
         book_list = []
+
         for book in books:
-            book_list.append(
-                {
-                    "title": book.title,
-                    "author": book.author.name,
-                    "genre": book.genre.name,
-                    "condition": book.condition.name,
-                    "description": book.description,
-                    "location": book.location,
-                    "owner": book.owner.username,
-                }
-            )
+            book_dict = {
+                "title": book.title,
+                "author": book.author.name,
+                "genre": [genre.name for genre in book.genres],
+                # "condition": book.condition.name,
+                "description": book.description,
+                # "location": book.location,
+                "owner": book.owner.first_name,
+            }
+            # if current_user:
+            #     book_dict["download_url"] = book.download_url
+            book_list.append(book_dict)
         return jsonify({"books": book_list})
 
     @jwt_required()
