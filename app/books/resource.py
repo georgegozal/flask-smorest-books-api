@@ -1,9 +1,10 @@
-from flask import make_response, jsonify, request
+from flask import jsonify, request, current_app
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from .models import Book, Genre, Author
-from app.utils import get_or_404, get_or_create
+from app.utils import get_or_404, get_or_create, get_extension
 from app.extensions import db
+import os
 
 
 class BooksResource(Resource):
@@ -14,6 +15,7 @@ class BooksResource(Resource):
     # parser.add_argument("condition", type=str, required=True)
     parser.add_argument("description", type=str, required=False)
     # parser.add_argument("location", type=str, required=True)
+    parser.add_argument("file_path", type=str, required=True)
 
     @jwt_required(optional=True)
     def get(self, genre=None):
@@ -50,10 +52,18 @@ class BooksResource(Resource):
         author = data.get("author")
         genre = data.get("genre")
         description = data.get("description")
+        file_path = data.get("file_path")
+        ext = get_extension(file_path)
+        if os.path.exists(file_path):
+            with open(file_path, "rb") as file:
+                # Process the file as needed, e.g., save it to a server location
+                file_content = file.read()
+
+            file_path_to_save = f"{current_app.config['UPLOAD_DIR']}/{title.replace(' ', '_')}_{author}{ext}"
+            with open(file_path_to_save, "wb") as saved_file:
+                saved_file.write(file_content)
 
         book = Book()
-        print("cu", current_user)
-        print(data)
         get_author, create = get_or_create(db, Author, name=author)
         book.create(
             title=str(title),

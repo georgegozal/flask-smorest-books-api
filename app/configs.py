@@ -11,15 +11,11 @@ class Config(object):
     PROJECT_ROOT = Path(__file__).resolve().parent.parent
     APP_ROOT = os.path.join(PROJECT_ROOT, "app")
     STATIC_FOLDER = os.path.join(APP_ROOT, "static")
-    UPLOAD_DIR = os.environ.get(
-        "UPLOAD_DIR",
-        os.path.join(APP_ROOT, "/static/uploads")
-    )
+    UPLOAD_DIR = os.environ.get("UPLOAD_DIR", os.path.join(APP_ROOT, "/static/uploads"))
+    UPLOAD_EXTENSIONS = [".pdf", ".docx", ".epub", ".mobi"]
     FLASK_DEBUG = os.environ.get("FLASK_DEBUG", False)
     if FLASK_DEBUG is True or FLASK_DEBUG == "1" or FLASK_DEBUG == "True":
-        SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(
-            PROJECT_ROOT, "db.sqlite"
-        )
+        SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(PROJECT_ROOT, "db.sqlite")
     else:
         POSTGRES_HOST = os.environ.get("POSTGRES_HOST")
         POSTGRES_PORT = os.environ.get("POSTGRES_PORT", 5432)

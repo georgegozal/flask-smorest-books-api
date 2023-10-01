@@ -31,3 +31,8 @@ def get_or_404(model, **kwargs):
     if instance:
         return instance
     abort(404)
+
+
+def get_extension(filename):
+    splited = filename.rsplit(".", 1)[1].lower()
+    return f".{splited}".lower()

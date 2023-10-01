@@ -24,6 +24,7 @@ def create_app():
             "Author": Author,
             "Genre": Genre,
             "Condition": Condition,
+            "config": Config,
         }
 
     return app

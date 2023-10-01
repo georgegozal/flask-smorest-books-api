@@ -13,6 +13,10 @@ class Book(db.Model, BASE):
     # is_available = db.Column(db.Boolean, default=True)
     owner_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    src = db.Column(db.String(255), nullable=False)
+
+    def add_book_url(self, filename):
+        self.src = f"{self.owner_id}/{self.id}/{self.title}.pdf"
 
     # condition = db.relationship("Condition", backref="books", lazy=True)
     genres = db.relationship(
