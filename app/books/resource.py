@@ -114,3 +114,18 @@ class BooksResource(Resource):
         except OSError as e:
             return {"message": e}, 404
         return {"message": f"{book.title} has been deleted"}, 200
+
+    @jwt_required()
+    def put(self, id):
+        current_user = get_jwt_identity()
+        book = get_or_404(Book, id=id)
+        if book.owner_id != current_user:
+            return {"message": "You are not authorized to edit this book"}, 401
+        data = request.get_json()
+        if data.get("author"):
+            author = get_or_404(Author, id=book.author_id)
+            author.update(id=author.id, name=data.get("author").lower())
+            data["author_id"] = author.id
+            del data["author"]
+        book.update(id=id, **data)
+        return {"message": f"{book.title} has been updated"}, 200
