@@ -48,4 +48,4 @@ def register_api(app):
     api = Api(app)
     api.add_resource(UserResource, "/auth/register")
     api.add_resource(LoginResource, "/auth/login")
-    api.add_resource(BooksResource, "/books", "/books/genre/<genre>")
+    api.add_resource(BooksResource, "/api/books", "/api/books/genre/<genre>")

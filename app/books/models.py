@@ -15,8 +15,9 @@ class Book(db.Model, BASE):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     src = db.Column(db.String(255), nullable=False)
 
-    def add_book_url(self, filename):
-        self.src = f"{self.owner_id}/{self.id}/{self.title}.pdf"
+    def add_book_url(self, ext):
+        self.src = f"{self.owner_id}_{self.id}_{self.title.replace(' ', '_')}_{self.author.name.replace(' ', '_')}{ext}"
+        self.save()
 
     # condition = db.relationship("Condition", backref="books", lazy=True)
     genres = db.relationship(
@@ -26,6 +27,9 @@ class Book(db.Model, BASE):
         backref=db.backref("books", lazy=True),
     )
 
+    def __repr__(self) -> str:
+        return f"{self.title} by {self.author.name}"
+
 
 class Genre(db.Model, BASE):
     __tablename__ = "genre"
@@ -34,10 +38,7 @@ class Genre(db.Model, BASE):
     name = db.Column(db.String(255), unique=True, nullable=False)
     # books = db.relationship("Book", backref="genre", lazy=True)
 
-    def __repr__(self):
-        return self.name
-
-    def __str__(self):
+    def __repr__(self) -> str:
         return self.name
 
 
@@ -55,6 +56,9 @@ class Author(db.Model, BASE):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), unique=True, nullable=False)
     books = db.relationship("Book", backref="author", lazy=True)
+
+    def __repr__(self) -> str:
+        return self.name
 
 
 class Condition(db.Model, BASE):
