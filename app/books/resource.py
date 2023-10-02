@@ -17,8 +17,10 @@ class BooksResource(Resource):
     # parser.add_argument("location", type=str, required=True)
     parser.add_argument("file_path", type=str, required=True)
 
-    @jwt_required(optional=True)
-    def get(self, genre=None):
+    @jwt_required(
+        optional=True,
+    )
+    def get(self, genre=None, author=None):
         authorization_header = request.headers.get("Authorization")
         if authorization_header:
             current_user = get_jwt_identity()
@@ -26,7 +28,14 @@ class BooksResource(Resource):
             current_user = None
 
         if genre:
-            books = Book.query.join(Book.genres).filter(Genre.name == genre).all()
+            books = (
+                Book.query.join(Book.genres).filter(Genre.name == genre.lower()).all()
+            )
+        elif author:
+            author = author.replace("_", " ")
+            books = (
+                Book.query.join(Book.author).filter(Author.name == author.lower()).all()
+            )
         else:
             books = Book.query.all()
         book_list = []
@@ -59,7 +68,7 @@ class BooksResource(Resource):
         ext = get_extension(file_path)
 
         book = Book()
-        get_author, create = get_or_create(db, Author, name=author)
+        get_author, create = get_or_create(db, Author, name=author.lower())
         book.create(
             title=str(title),
             author_id=get_author.id,
@@ -69,7 +78,7 @@ class BooksResource(Resource):
         )
 
         for g in genre:
-            get_genre, create = get_or_create(db, Genre, name=g)
+            get_genre, create = get_or_create(db, Genre, name=g.lower())
             book.genres.append(get_genre)
         book.save()
         book.add_book_url(ext)
