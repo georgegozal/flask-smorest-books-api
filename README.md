@@ -34,8 +34,16 @@ Follow these steps to get the Flask Books API up and running on your local machi
 
 ## Configuration
  Change a .env file in the project root directory  with the following variables:
+
+ The application can be configured using the following environment variables:
+
+- `FLASK_DEBUG`: Set this variable to `False` for production. If `True`, SQLite3 will be used as the database, and other PostgreSQL variables are not required.
+
+If `FLASK_DEBUG` is set to `True`, the application will use SQLite3. No additional PostgreSQL variables are needed.
+
+If `FLASK_DEBUG` is set to `False`, you must configure the following PostgreSQL variables:
+
  
-* FLASK_DEBUG=False
 * POSTGRES_HOST=localhost
 * POSTGRES_PORT=5432
 * POSTGRES_USER=postgres
