@@ -51,6 +51,7 @@ def register_api(app):
     api.add_resource(
         BooksResource,
         "/api/books",
+        "/api/books/<id>",
         "/api/books/genre/<genre>",
         "/api/books/author/<author>",
     )

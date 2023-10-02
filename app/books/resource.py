@@ -2,7 +2,7 @@ from flask import jsonify, request, current_app as app, send_from_directory
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from .models import Book, Genre, Author
-from app.utils import get_or_create, get_extension
+from app.utils import get_or_create, get_extension, get_or_404
 from app.extensions import db
 import os
 
@@ -20,7 +20,7 @@ class BooksResource(Resource):
     @jwt_required(
         optional=True,
     )
-    def get(self, genre=None, author=None):
+    def get(self, genre=None, author=None, id=None):
         authorization_header = request.headers.get("Authorization")
         if authorization_header:
             current_user = get_jwt_identity()
@@ -36,12 +36,15 @@ class BooksResource(Resource):
             books = (
                 Book.query.join(Book.author).filter(Author.name == author.lower()).all()
             )
+        elif id:
+            books = [get_or_404(Book, id=id)]
         else:
             books = Book.query.all()
         book_list = []
 
         for book in books:
             book_dict = {
+                "id": book.id,
                 "title": book.title,
                 "author": book.author.name,
                 "genre": [genre.name for genre in book.genres],
@@ -98,3 +101,16 @@ class BooksResource(Resource):
                 saved_file.write(file_content)
 
         return {"message": f"{book.title} has been added"}, 201
+
+    @jwt_required()
+    def delete(self, id):
+        current_user = get_jwt_identity()
+        book = get_or_404(Book, id=id)
+        if book.owner_id != current_user:
+            return {"message": "You are not authorized to delete this book"}, 401
+        try:
+            os.remove(os.path.join(app.config["UPLOAD_DIR"], book.src))
+            book.delete()
+        except OSError as e:
+            return {"message": e}, 404
+        return {"message": f"{book.title} has been deleted"}, 200
