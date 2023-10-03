@@ -1,4 +1,5 @@
 from flask import Flask
+from sqlalchemy.exc import OperationalError
 from flask_restful import Api
 from app.extensions import db, migrate, jwt
 from app.auth import User
@@ -6,14 +7,22 @@ from app.auth.resource import UserResource, LoginResource
 from app.books import Book, Author, Genre, Condition, BookGenres
 from app.books.resource import BooksResource
 from app.configs import Config
+import threading
+
+initialized = False
+initialization_lock = threading.Lock()
 
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object(Config)
 
-    register_extensions(app)
-    register_api(app)
+    global initialized
+    with initialization_lock:
+        if not initialized:
+            app.config.from_object(Config)
+            register_extensions(app)
+            register_api(app)
+            initialized = True
 
     @app.shell_context_processor
     def make_shell_context():
@@ -41,7 +50,11 @@ def register_extensions(app):
     jwt.init_app(app)
 
     with app.app_context():
-        db.create_all()
+        try:
+            db.create_all()
+        except OperationalError as e:
+            # Handle the OperationalError (database already exists)
+            print(f"Database already exists: {e}")
 
 
 def register_api(app):

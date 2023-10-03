@@ -30,5 +30,6 @@ class Config(object):
             {POSTGRES_DB}".replace(
             " ", ""
         )
+    print(SQLALCHEMY_DATABASE_URI)
     SECRET_KEY = os.environ.get("SECRET_KEY") or "asd;lkajs-90 as;doaksdasd0/A"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
