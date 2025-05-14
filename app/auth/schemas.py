@@ -1,4 +1,10 @@
-from marshmallow import Schema, fields, validate
+from marshmallow import Schema, fields, validate, pre_load, validates, ValidationError
+
+def strip_whitespace(value):
+    """მოაშორებს whitespace-ს სტრინგებს თუ სტრინგია"""
+    if isinstance(value, str):
+        return value.strip()
+    return value
 
 
 class UserSchema(Schema):
@@ -9,9 +15,25 @@ class UserSchema(Schema):
     email = fields.Email(required=True)
     created_at = fields.DateTime(dump_only=True)
 
+    @pre_load
+    def sanitize_data(self, data, **kwargs):
+        print("sanitazing data")
+        """დამუშავება მონაცემების მიღებისას"""
+        if "first_name" in data and data["first_name"]:
+            data["first_name"] = strip_whitespace(data["first_name"])
+        if "email" in data and data["email"]:
+            data["email"] = strip_whitespace(data["email"])
+        return data
+
 
 class UserRegisterSchema(UserSchema):
     password = fields.Str(required=True, validate=validate.Length(min=6), load_only=True)
+
+    # @validates("password")
+    # def validate_password(self, value):
+    #     """პაროლის დამატებითი ვალიდაცია"""
+    #     if value.isdigit():
+    #         raise ValidationError("პაროლი არ უნდა შეიცავდეს მხოლოდ ციფრებს")
 
 
 class UserLoginSchema(Schema):

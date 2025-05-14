@@ -1,4 +1,4 @@
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, validate, pre_load, validates, ValidationError
 
 # class GenreSchema(Schema):
 #     id = fields.Int(dump_only=True)
@@ -42,6 +42,13 @@ class BookSchema(Schema):
     
     # author = fields.Nested(PlainAuthorSchema(), dump_only=True)
     genres = fields.List(fields.Nested(PlainGenreSchema()), dump_only=True)
+
+    @pre_load
+    def sanitize_data(self, data, **kwargs):
+        """დამუშავება მონაცემების მიღებისას"""
+        if "author" in data and data["author"]:
+            data["author"] = strip_whitespace(data["author"]).lower()
+        return data
 
 
 class BookUpdateSchema(Schema):
