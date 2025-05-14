@@ -36,3 +36,17 @@ def get_or_404(model, **kwargs):
 def get_extension(filename):
     splited = filename.rsplit(".", 1)[1].lower()
     return f".{splited}".lower()
+
+
+def serialize_book(book, current_user=None):
+    book_dict = {
+        "id": book.id,
+        "title": book.title,
+        "author": book.author.name,
+        "genre": [g.name for g in book.genres],
+        "description": book.description,
+        "owner": book.owner.first_name,
+    }
+    if current_user:
+        book_dict["download_url"] = os.path.join(app.config["UPLOAD_DIR"], book.src)
+    return book_dict

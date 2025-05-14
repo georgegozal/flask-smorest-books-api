@@ -1,12 +1,26 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from datetime import timedelta
+
 
 # Load environment variables from .env file
 load_dotenv()
 
 
 class Config(object):
+    # Flask-Smorest
+    API_TITLE = "წიგნების მართვის API"
+    API_VERSION = "v1"
+    OPENAPI_VERSION = "3.0.2"
+    OPENAPI_URL_PREFIX = "/"
+    OPENAPI_SWAGGER_UI_PATH = "/swagger-ui"
+    OPENAPI_SWAGGER_UI_URL = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
+
+    # Flask-JWT-Extended
+    JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "jwt-dev-key-should-be-changed")
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
+
     PROJECT_NAME = "flask_books-api"
     PROJECT_ROOT = Path(__file__).resolve().parent.parent
     APP_ROOT = os.path.join(PROJECT_ROOT, "app")
@@ -30,6 +44,5 @@ class Config(object):
             {POSTGRES_DB}".replace(
             " ", ""
         )
-    print(SQLALCHEMY_DATABASE_URI)
     SECRET_KEY = os.environ.get("SECRET_KEY") or "asd;lkajs-90 as;doaksdasd0/A"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
