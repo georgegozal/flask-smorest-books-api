@@ -65,6 +65,7 @@ class BookResource(MethodView):
         book = Book.query.get_or_404(book_id)
         return book
     
+    #TODO: არ ხდება ჯანრების დამატება
     @jwt_required()
     @blp.arguments(BookUpdateSchema)
     @blp.response(200, BookSchema)

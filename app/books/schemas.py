@@ -70,3 +70,5 @@ class GenreSchema(Schema):
 class AuthorSchema(Schema):
     id = fields.Int(dump_only=True)
     name = fields.Str(required=True)
+
+    # books = fields.List(fields.Nested(BookSchema()), dump_only=True)
