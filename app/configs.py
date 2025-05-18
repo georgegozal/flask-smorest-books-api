@@ -16,7 +16,10 @@ class Config(object):
     OPENAPI_URL_PREFIX = "/"
     OPENAPI_SWAGGER_UI_PATH = "/"
     OPENAPI_SWAGGER_UI_URL = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
-
+    OPENAPI_REDOC_PATH = "/redoc"
+    OPENAPI_REDOC_URL = (
+        "https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"
+    )
     # Flask-JWT-Extended
     JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "jwt-dev-key-should-be-changed")
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
