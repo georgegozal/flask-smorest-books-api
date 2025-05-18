@@ -20,6 +20,9 @@ class Config(object):
     OPENAPI_REDOC_URL = (
         "https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"
     )
+    OPENAPI_RAPIDOC_PATH = "/rapidoc"
+    OPENAPI_RAPIDOC_URL = "https://unpkg.com/rapidoc/dist/rapidoc-min.js"
+
     # Flask-JWT-Extended
     JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "jwt-dev-key-should-be-changed")
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
