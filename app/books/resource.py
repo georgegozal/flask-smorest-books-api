@@ -13,7 +13,7 @@ import os
 
 from werkzeug.utils import secure_filename
 
-blp = Blueprint("Books", "books", description="წიგნების ოპერაციები")
+blp = Blueprint("Books", "books", description="წიგნების ოპერაციები", url_prefix="/api")
 
 
 @blp.route("/books")
