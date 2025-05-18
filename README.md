@@ -58,11 +58,13 @@ gunicorn
     
     main:app -w 4 --threads 2 -b 0.0.0.0:5000
 
-Access Swagger UI at: [http://localhost:5000](http://localhost:5000)
 
-Redoc: [http://localhost:5000/redoc](http://localhost:5000/redoc)
 
-Rapidoc: [http://localhost:5000/rapidoc](http://localhost:5000/rapidoc)
+#### Access API docs:  
+- Swagger UI: [http://localhost:5000](http://localhost:5000)  
+- Redoc: [http://localhost:5000/redoc](http://localhost:5000/redoc)  
+- Rapidoc: [http://localhost:5000/rapidoc](http://localhost:5000/rapidoc)
+
 
 
 #### 🔗 API Endpoints
