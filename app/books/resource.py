@@ -5,9 +5,13 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from app.extensions import db
 from app.books.models import Book, Genre, Author
-from app.books.schemas import BookSchema, BookCreateSchema, BookUpdateSchema, AuthorSchema, GenreSchema
+from app.books.schemas import BookSchema, BookCreateSchema, BookUpdateSchema, AuthorSchema, GenreSchema, BookUploadSchema
 from app.auth.models import User
 from app.utils import get_or_create
+from flask import current_app as app
+import os
+
+from werkzeug.utils import secure_filename
 
 blp = Blueprint("Books", "books", description="წიგნების ოპერაციები")
 
@@ -17,29 +21,39 @@ class BookList(MethodView):
     @blp.response(200, BookSchema(many=True))
     def get(self):
         """ყველა წიგნის სიის მიღება"""
+        # return Book.get(filters=args)
         return Book.query.all()
     
     @jwt_required()
-    @blp.arguments(BookCreateSchema)
+    @blp.arguments(BookUploadSchema, location="files")
+    @blp.arguments(BookCreateSchema, location="form")
     @blp.response(201, BookSchema)
-    def post(self, book_data):
+    def post(self, files, book_data):
         """ახალი წიგნის შექმნა"""
         user_email = get_jwt_identity()
         
-        # ჟანრების დამუშავება
+        print("files", files, "\n", "book_data", book_data)
+
+        # # ჟანრების დამუშავება
         genre_ids = book_data.pop("genre_ids", [])
         
         user = User.query.filter_by(email=user_email).first()
 
         author, _ = get_or_create(db, Author, name=book_data["author"].lower())
-        # author, _ = Author.query.get_or_create(name=author_name.lower())
+        # # author, _ = Author.query.get_or_create(name=author_name.lower())
+
+        # Uploaded File
+        uploaded_file = files["book"]
+        filename = secure_filename(uploaded_file.filename)
+        file_path = os.path.join(app.config.get("UPLOAD_DIR"), filename)
+        uploaded_file.save(file_path)
 
         book = Book(
             author_id=author.id,
             title=book_data["title"],
             description=book_data["description"],
             owner_id=user.id,
-            src=book_data["title"]
+            src=filename
         )
 
         # ჟანრების დამატება
@@ -55,6 +69,7 @@ class BookList(MethodView):
             abort(500, message=str(e))
             
         return book
+
 
 
 @blp.route("/books/<int:book_id>")
