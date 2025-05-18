@@ -8,7 +8,7 @@ from app.extensions import db
 from app.auth.models import User
 from app.auth.schemas import UserSchema, UserRegisterSchema, UserLoginSchema
 
-blp = Blueprint("Auth", "auth", description="ავტორიზაციის ოპერაციები")
+blp = Blueprint("Auth", "auth", description="ავტორიზაციის ოპერაციები", url_prefix="/auth")
 
 
 @blp.route("/register")
