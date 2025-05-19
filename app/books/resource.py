@@ -5,7 +5,10 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from app.extensions import db
 from app.books.models import Book, Genre, Author
-from app.books.schemas import  GetBookSchema, CreateBookSchema, BookUpdateSchema, AuthorSchema, GenreSchema, BookUploadSchema
+from app.books.schemas import  (
+    GetBookSchema, CreateBookSchema, BookUpdateSchema, AuthorSchema,
+    GenreSchema,BookUploadSchema, ListBookParameters
+)
 from app.auth.models import User
 from app.utils import get_or_create
 from flask import current_app as app, request, redirect, url_for, send_from_directory
@@ -18,11 +21,24 @@ blp = Blueprint("Books", "books", description="წიგნების ოპ�
 
 @blp.route("/books")
 class BookList(MethodView):
+    @blp.arguments(ListBookParameters, location="query")
     @blp.response(200, GetBookSchema(many=True))
-    def get(self):
+    def get(self, args):
         """ყველა წიგნის სიის მიღება"""
-        # return Book.get(filters=args)
-        return Book.query.all()
+        order_fields = {
+            "created_at": Book.created_at,
+            "title": Book.title
+        }
+
+        order_by_field = order_fields.get(args['order_by'].value, "created_at")
+        order_direction = order_fields.get(args.get('order').value, "asc")
+        if order_direction == "asc":
+            query =  Book.query.order_by(order_by_field.asc())
+        else:
+            query = Book.query.order_by(order_by_field.desc())
+
+        books = query.all()
+        return books
     
     @jwt_required()
     @blp.arguments(BookUploadSchema, location="files")

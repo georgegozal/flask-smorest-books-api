@@ -2,6 +2,7 @@ from marshmallow import Schema, fields, validate, pre_load, validates, Validatio
 from flask_smorest.fields import Upload
 from flask import current_app as app, url_for
 import os
+import enum
 
 
 def strip_whitespace(field):
@@ -86,3 +87,18 @@ class AuthorSchema(Schema):
     name = fields.Str(required=True)
 
     # books = fields.List(fields.Nested(BookSchema()), dump_only=True)
+
+
+class ListOrderBy(enum.Enum):
+    title = "title"
+    created_at = "created_at"
+
+
+class ListOrder(enum.Enum):
+    asc = "asc"
+    desc = "desc"
+
+
+class ListBookParameters(Schema):
+    order_by = fields.Enum(ListOrderBy, load_default=ListOrderBy.created_at)
+    order = fields.Enum(ListOrder, load_default=ListOrder.desc)
